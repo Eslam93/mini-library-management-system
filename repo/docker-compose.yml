@@ -1,0 +1,52 @@
+# Local stack.
+#   docker compose up -d db       Postgres only, for development (host port 55432; set DB_PORT to change)
+#   docker compose up --build     the whole application on http://localhost:8000
+# Settings can be overridden in repo/.env (see backend/.env.example).
+name: library
+
+x-app: &app
+  build: .
+  image: library:local
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    APP_ENV: ${APP_ENV:-local}
+    DATABASE_URL: postgresql+asyncpg://library:${POSTGRES_PASSWORD:-library}@db:5432/library
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: library
+      POSTGRES_USER: library
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-library}
+    ports:
+      - "127.0.0.1:${DB_PORT:-55432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U library -d library"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Applies database migrations once, then exits. The app starts only after it succeeds.
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    <<: *app
+    ports:
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:

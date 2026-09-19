@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Theme tokens.
+ *
+ * Every color token holds its light and dark value in one light-dark() pair.
+ * The pair follows the operating system setting by default. A "dark" or
+ * "light" class on <html> forces one scheme.
+ */
+
+:root {
+  color-scheme: light dark;
+}
+
+:root.light {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+/* dark: utilities follow the same rule as the tokens. */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not(.light, .light *)) {
+      @slot;
+    }
+  }
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* Neutral surfaces and text. */
+  --background: light-dark(oklch(0.985 0.002 265), oklch(0.17 0.01 265));
+  --foreground: light-dark(oklch(0.21 0.015 265), oklch(0.95 0.005 265));
+  --card: light-dark(oklch(1 0 0), oklch(0.205 0.012 265));
+  --card-foreground: var(--foreground);
+  --popover: light-dark(oklch(1 0 0), oklch(0.22 0.012 265));
+  --popover-foreground: var(--foreground);
+  --secondary: light-dark(oklch(0.955 0.005 265), oklch(0.27 0.012 265));
+  --secondary-foreground: light-dark(oklch(0.25 0.015 265), oklch(0.95 0.005 265));
+  --muted: light-dark(oklch(0.96 0.004 265), oklch(0.25 0.01 265));
+  --muted-foreground: light-dark(oklch(0.52 0.015 265), oklch(0.7 0.012 265));
+  --border: light-dark(oklch(0.91 0.005 265), oklch(1 0 0 / 10%));
+  --input: light-dark(oklch(0.88 0.006 265), oklch(1 0 0 / 15%));
+
+  /* The one accent color: indigo. */
+  --primary: light-dark(oklch(0.49 0.16 275), oklch(0.7 0.14 275));
+  --primary-foreground: light-dark(oklch(0.985 0.002 265), oklch(0.18 0.03 275));
+  --accent: light-dark(oklch(0.95 0.012 275), oklch(0.28 0.03 275));
+  --accent-foreground: light-dark(oklch(0.3 0.08 275), oklch(0.93 0.03 275));
+  --ring: light-dark(oklch(0.6 0.15 275), oklch(0.62 0.13 275));
+
+  --destructive: light-dark(oklch(0.56 0.21 25), oklch(0.68 0.19 22));
+  --destructive-foreground: light-dark(oklch(0.985 0.002 265), oklch(0.18 0.02 22));
+
+  /* Loan states. Solid for dots and icons, surface and foreground for badges. */
+  --available: light-dark(oklch(0.6 0.14 155), oklch(0.72 0.15 155));
+  --available-surface: light-dark(oklch(0.955 0.04 155), oklch(0.3 0.06 155));
+  --available-foreground: light-dark(oklch(0.38 0.1 155), oklch(0.88 0.09 155));
+
+  --borrowed: light-dark(oklch(0.72 0.15 70), oklch(0.8 0.14 75));
+  --borrowed-surface: light-dark(oklch(0.96 0.05 85), oklch(0.32 0.06 70));
+  --borrowed-foreground: light-dark(oklch(0.44 0.11 60), oklch(0.9 0.1 85));
+
+  --overdue: light-dark(oklch(0.58 0.2 25), oklch(0.7 0.18 22));
+  --overdue-surface: light-dark(oklch(0.955 0.03 20), oklch(0.32 0.08 22));
+  --overdue-foreground: light-dark(oklch(0.44 0.16 25), oklch(0.9 0.06 20));
+
+  /*
+   * Chart series. The current period is the accent; the previous period is a
+   * quieter step of the same hue: lighter on the light surface, darker on the
+   * dark one, so it recedes in both.
+   */
+  --chart-current: var(--primary);
+  --chart-previous: light-dark(oklch(0.72 0.09 275), oklch(0.5 0.1 275));
+  /* A shaded range, such as a forecast's likely range: a light wash of the accent under the lines. */
+  --chart-range: light-dark(oklch(0.49 0.16 275 / 13%), oklch(0.7 0.14 275 / 20%));
+}
+
+@theme inline {
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-available: var(--available);
+  --color-available-surface: var(--available-surface);
+  --color-available-foreground: var(--available-foreground);
+  --color-borrowed: var(--borrowed);
+  --color-borrowed-surface: var(--borrowed-surface);
+  --color-borrowed-foreground: var(--borrowed-foreground);
+  --color-overdue: var(--overdue);
+  --color-overdue-surface: var(--overdue-surface);
+  --color-overdue-foreground: var(--overdue-foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}
